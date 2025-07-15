@@ -12,5 +12,9 @@ router.post("/", controller.createProduct)
 router.get("/:id", controller.getProductById)
 router.put("/:id", controller.updateProduct)
 router.delete("/:id", controller.deleteProduct)
+  router.get("/test", (req, res) => {
+  res.send("Admin route working ✅")
+})
+
 
 module.exports = router
