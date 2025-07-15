@@ -1,34 +1,53 @@
 require("dotenv").config()
 const express = require("express")
-const mongoose = require("./config/db") // This will connect to MongoDB
+const mongoose = require("./config/db") // DB connection file
 const cors = require("cors")
-const bodyParser = require("body-parser") // Added body-parser as it was in npm install
+const bodyParser = require("body-parser")
 
 const app = express()
+const PORT = process.env.PORT || 5005
 
-// Middleware
+// Middlewares
 app.use(cors())
-app.use(express.json()) // For parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })) // For parsing application/x-www-form-urlencoded
+app.use(express.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
-// Import routes
+// Routes
 const adminRoutes = require("./routes/admin.routes")
 const storeRoutes = require("./routes/store.routes")
 
-// Use routes
-app.use("/api/admin/products", adminRoutes)
-app.use("/api/store", storeRoutes)
+// Prefix all routes with /product-api
+app.use("/product-api/api/admin/products", adminRoutes)
+app.use("/product-api/api/store", storeRoutes)
 
-// Basic route for health check
-app.get("/", (req, res) => {
-  res.send("Product microservice is running!")
+// Health check
+app.get("/product-api/api/health", (req, res) => {
+  res.json({
+    status: "✅ Product microservice running!",
+    timestamp: new Date().toISOString(),
+  })
 })
 
-// Error handling middleware (optional, but good practice)
+// Fallback for undefined routes
+app.use("*", (req, res) => {
+  res.status(404).json({
+    error: "Route not found",
+    method: req.method,
+    path: req.originalUrl,
+    timestamp: new Date().toISOString(),
+  })
+})
+
+// Global error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack)
-  res.status(500).send("Something broke!")
+  console.error("❌ Error:", err.stack)
+  res.status(500).json({
+    error: "Internal Server Error",
+    details: process.env.NODE_ENV === "development" ? err.message : undefined,
+  })
 })
 
-const PORT = process.env.PORT || 5005
-app.listen(PORT, () => console.log(`Product service running on port ${PORT}`))
+// Start server
+app.listen(PORT, () =>
+  console.log(`🚀 Product service running on port ${PORT}`)
+)
