@@ -13,7 +13,7 @@ app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 // Health check (IMPORTANT: Put this first!)
-app.get("/product-api/api/health", (req, res) => {
+app.get("/api/health", (req, res) => {
   res.json({
     status: "✅ Product microservice running!",
     timestamp: new Date().toISOString(),
@@ -25,8 +25,8 @@ const adminRoutes = require("./routes/admin.routes")
 const storeRoutes = require("./routes/store.routes")
 
 // Use routes under clean prefixes
-app.use("/product-api/api/admin", adminRoutes)
-app.use("/product-api/api/store", storeRoutes)
+app.use("/api/admin", adminRoutes)
+app.use("/api/store", storeRoutes)
 
 // Fallback
 app.use("*", (req, res) => {
