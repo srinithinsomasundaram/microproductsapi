@@ -16,12 +16,12 @@ app.use(bodyParser.urlencoded({ extended: true }))
 const adminRoutes = require("./routes/admin.routes")
 const storeRoutes = require("./routes/store.routes")
 
-// Prefix all routes with /product-api
-app.use("/product-api/api/admin/products", adminRoutes)
-app.use("/product-api/api/store", storeRoutes)
+// Use routes without `/product-api` prefix (NGINX handles that)
+app.use("/api/admin/products", adminRoutes)
+app.use("/api/store", storeRoutes)
 
 // Health check
-app.get("/product-api/api/health", (req, res) => {
+app.get("/api/health", (req, res) => {
   res.json({
     status: "✅ Product microservice running!",
     timestamp: new Date().toISOString(),
