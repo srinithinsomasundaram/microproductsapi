@@ -17,8 +17,8 @@ const adminRoutes = require("./routes/admin.routes")
 const storeRoutes = require("./routes/store.routes")
 
 // Use routes without `/product-api` prefix (NGINX handles that)
-app.use("/api/admin/products", adminRoutes)
-app.use("/api/store", storeRoutes)
+app.use("/product-api/api/admin", adminRoutes)
+app.use("/product-api/api/store", storeRoutes)
 
 // Health check
 app.get("/api/health", (req, res) => {
