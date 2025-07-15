@@ -1,53 +1,53 @@
-require("dotenv").config()
-const express = require("express")
-const mongoose = require("./config/db")
-const cors = require("cors")
-const bodyParser = require("body-parser")
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("./config/db");
+const cors = require("cors");
+const bodyParser = require("body-parser");
 
-const app = express()
-const PORT = process.env.PORT || 5005
+const app = express();
+const PORT = process.env.PORT || 5005;
 
 // Middlewares
-app.use(cors())
-app.use(express.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(cors());
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// Health check (IMPORTANT: Put this first!)
+// Health check route (put this BEFORE other routes)
 app.get("/api/health", (req, res) => {
   res.json({
     status: "✅ Product microservice running!",
     timestamp: new Date().toISOString(),
-  })
-})
+  });
+});
 
 // Route files
-const adminRoutes = require("./routes/admin.routes")
-const storeRoutes = require("./routes/store.routes")
+const adminRoutes = require("./routes/admin.routes");
+const storeRoutes = require("./routes/store.routes");
 
-// Use routes under clean prefixes
-app.use("/api/admin", adminRoutes)
-app.use("/api/store", storeRoutes)
+// Use routes under prefixes
+app.use("/api/admin", adminRoutes);
+app.use("/api/store", storeRoutes);
 
-// Fallback
+// Catch all undefined routes
 app.use("*", (req, res) => {
   res.status(404).json({
     error: "Route not found",
     method: req.method,
     path: req.originalUrl,
     timestamp: new Date().toISOString(),
-  })
-})
+  });
+});
 
-// Error handler
+// Global error handler
 app.use((err, req, res, next) => {
-  console.error("❌ Error:", err.stack)
+  console.error("❌ Error:", err.stack);
   res.status(500).json({
     error: "Internal Server Error",
     details: process.env.NODE_ENV === "development" ? err.message : undefined,
-  })
-})
+  });
+});
 
 // Start server
 app.listen(PORT, () =>
   console.log(`🚀 Product service running on port ${PORT}`)
-)
+);
