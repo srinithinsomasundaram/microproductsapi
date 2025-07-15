@@ -7,8 +7,8 @@ const checkApiKey = require("../middlewares/apiKey.middleware")
 router.use(checkApiKey)
 
 // Admin product routes
-router.get("/", controller.getAllProducts)
-router.post("/", controller.createProduct)
+router.get("/products", controller.getAllProducts)
+router.post("/products", controller.createProduct)
 router.get("/:id", controller.getProductById)
 router.put("/:id", controller.updateProduct)
 router.delete("/:id", controller.deleteProduct)
